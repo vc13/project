@@ -10,6 +10,7 @@ def graph_spectrogram(wav_file):
     pylab.title('spectrogram of %r' % wav_file)
     pylab.specgram(sound_info, Fs=frame_rate)
     pylab.savefig('hello.png')
+    print "Spectogram Generated"
 
 
 def get_wav_info(wav_file):
@@ -20,8 +21,8 @@ def get_wav_info(wav_file):
     wav.close()
     return sound_info, frame_rate
 
-def init(mp3_file ,wav_file = 'hello.wav'):
-    AudioSegment.from_mp3(mp3_file).export(wav_file, format="wav")
+def init(mp3_file="",wav_file = 'hello.wav'):
+    # AudioSegment.from_mp3(mp3_file).export(wav_file, format="wav")
     graph_spectrogram(wav_file)
 
 if __name__ == '__main__':
