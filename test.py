@@ -22,7 +22,7 @@ DEFAULT_WINDOW_SIZE = 4096
 
 ######################################################################
 # Ratio by which each sequential window overlaps the last and the
-# next window. Higher overlap will allow a higher granularity of offset
+# next window. Higher over8192ill allow a higher granularity of offset
 # matching, but potentially more fingerprints.
 DEFAULT_OVERLAP_RATIO = 0.5
 
@@ -62,6 +62,9 @@ PEAK_SORT = True
 # potentially higher collisions and misclassifications when identifying songs.
 FINGERPRINT_REDUCTION = 20
 
+# for image size 
+X_SIZE = 10.8
+Y_SIZE = 7.2
 
 def graph_spectrogram(wav_file):
     sound_info, frame_rate = get_wav_info(wav_file)
@@ -69,8 +72,6 @@ def graph_spectrogram(wav_file):
     pylab.subplot(111)
     pylab.title('spectrogram of %r' % wav_file)
     pylab.specgram(sound_info, Fs=frame_rate)
-    i,j = peakdet(sound_info,1)
-    pylab.scatter(j,i)
     pylab.savefig('hello.png')
     print "Spectogram Generated"
 
@@ -84,7 +85,10 @@ def get_wav_info(wav_file):
     return sound_info, frame_rate
 
 def secondFunction():
+    global X_SIZE,Y_SIZE
     data, rate = get_wav_info("hello.wav")
+    X_SIZE,Y_SIZE = size(len(data))
+    print X_SIZE,Y_SIZE
     fingerprint(data)
 
 def fingerprint(channel_samples, Fs=DEFAULT_FS,
@@ -107,12 +111,9 @@ def fingerprint(channel_samples, Fs=DEFAULT_FS,
     # apply log transform since specgram() returns linear array
     arr2D = 10 * np.log10(arr2D)
     arr2D[arr2D == -np.inf] = 0  # replace infs with zeros
-    # generate_spectogram(arr2D)
+
     # find local maxima
     local_maxima = get_2D_peaks(arr2D, plot=True, amp_min=amp_min)
-
-    # return hashes
-    # return generate_hashes(local_maxima, fan_value=fan_value)
 
 
 def get_2D_peaks(arr2D, plot=False, amp_min=DEFAULT_AMP_MIN):
@@ -144,23 +145,24 @@ def get_2D_peaks(arr2D, plot=False, amp_min=DEFAULT_AMP_MIN):
 
     if plot:
         # scatter of the peaks
-        # plt.figure(num=None,figsize=(19, 12))
         fig, ax = plt.subplots()
         ax.imshow(arr2D)
         ax.scatter(time_idx, frequency_idx)
         ax.set_xlabel('Time')
         ax.set_ylabel('Frequency')
         ax.set_title("Spectrogram")
-        fig.set_size_inches(19, 12)
+        print X_SIZE,Y_SIZE
+        fig.set_size_inches(X_SIZE,Y_SIZE)
         plt.gca().invert_yaxis()
         plt.savefig('hello.png',dpi=100,transparent=True)
 
-    # return zip(frequency_idx, time_idx
+def size(length):
+    k = int(length / 5291230)
+    return (10*k,7*k)
 
 
-
-def init(mp3_file="../dejavu/mp3/The-Lights-Galaxia--While-She-Sleeps.mp3",wav_file = 'hello.wav'):
-    # AudioSegment.from_mp3(mp3_file).export(wav_file, format="wav")
+def init(mp3_file="../dejavu/lauda.mp3",wav_file = 'hello.wav'):
+    AudioSegment.from_mp3("portions/fourmin.mp3").export(wav_file, format="wav")
     # graph_spectrogram(wav_file)
     secondFunction()
 
