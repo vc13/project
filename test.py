@@ -18,7 +18,7 @@ DEFAULT_FS = 44100
 
 ######################################################################
 # Size of the FFT window, affects frequency granularity
-DEFAULT_WINDOW_SIZE = 4096
+DEFAULT_WINDOW_SIZE = 2048
 
 ######################################################################
 # Ratio by which each sequential window overlaps the last and the
@@ -65,6 +65,7 @@ FINGERPRINT_REDUCTION = 20
 # for image size 
 X_SIZE = 19
 Y_SIZE = 12
+DPI = 100
 
 def graph_spectrogram(wav_file):
     sound_info, frame_rate = get_wav_info(wav_file)
@@ -85,10 +86,11 @@ def get_wav_info(wav_file):
     return sound_info, frame_rate
 
 def secondFunction(wav_file):
-    global X_SIZE,Y_SIZE
     data, rate = get_wav_info(wav_file)
-    X_SIZE,Y_SIZE = size(len(data))
-    print X_SIZE,Y_SIZE
+    size(len(data))
+    # print len(data)
+    # print size(len(data))
+    # print X_SIZE,Y_SIZE
     fingerprint(data)
 
 def fingerprint(channel_samples, Fs=DEFAULT_FS,
@@ -151,17 +153,25 @@ def get_2D_peaks(arr2D, plot=False, amp_min=DEFAULT_AMP_MIN):
         ax.set_xlabel('Time')
         ax.set_ylabel('Frequency')
         ax.set_title("Spectrogram")
-        print X_SIZE,Y_SIZE
+        # print X_SIZE,Y_SIZE
         fig.set_size_inches(X_SIZE,Y_SIZE)
         plt.gca().invert_yaxis()
-        plt.savefig('hello.png',dpi=50,transparent=True)
+        k = plt.gcf().get_size_inches()
+        plt.savefig('hello.png',dpi=DPI,bbox_inches='tight',transparent=True)
 
 def size(length):
-    k = int(length / 5291230)
-    return (X_SIZE*k,Y_SIZE*k)
+    global X_SIZE,Y_SIZE,DEFAULT_WINDOW_SIZE,DPI
+    k = (length / 5291230.0)
+    if length < 5291230 :
+        DEFAULT_WINDOW_SIZE = 4096 / k
+    else:
+        X_SIZE = X_SIZE *k
+        Y_SIZE = Y_SIZE *k
+        DPI = 200 * k
+        DEFAULT_WINDOW_SIZE = 4096 * k
 
 
-def init(mp3_file="",wav_file = 'hello.wav'):
+def init(mp3_file="portions/10min.mp3",wav_file = 'hello.wav'):
     # AudioSegment.from_mp3(mp3_file).export(wav_file, format="wav")
     # graph_spectrogram(wav_file)
     secondFunction(wav_file)
