@@ -63,8 +63,8 @@ PEAK_SORT = True
 FINGERPRINT_REDUCTION = 20
 
 # for image size 
-X_SIZE = 10.8
-Y_SIZE = 7.2
+X_SIZE = 19
+Y_SIZE = 12
 
 def graph_spectrogram(wav_file):
     sound_info, frame_rate = get_wav_info(wav_file)
@@ -84,9 +84,9 @@ def get_wav_info(wav_file):
     wav.close()
     return sound_info, frame_rate
 
-def secondFunction():
+def secondFunction(wav_file):
     global X_SIZE,Y_SIZE
-    data, rate = get_wav_info("hello.wav")
+    data, rate = get_wav_info(wav_file)
     X_SIZE,Y_SIZE = size(len(data))
     print X_SIZE,Y_SIZE
     fingerprint(data)
@@ -154,17 +154,17 @@ def get_2D_peaks(arr2D, plot=False, amp_min=DEFAULT_AMP_MIN):
         print X_SIZE,Y_SIZE
         fig.set_size_inches(X_SIZE,Y_SIZE)
         plt.gca().invert_yaxis()
-        plt.savefig('hello.png',dpi=100,transparent=True)
+        plt.savefig('hello.png',dpi=50,transparent=True)
 
 def size(length):
     k = int(length / 5291230)
-    return (10*k,7*k)
+    return (X_SIZE*k,Y_SIZE*k)
 
 
-def init(mp3_file="../dejavu/lauda.mp3",wav_file = 'hello.wav'):
-    AudioSegment.from_mp3("portions/fourmin.mp3").export(wav_file, format="wav")
+def init(mp3_file="",wav_file = 'hello.wav'):
+    # AudioSegment.from_mp3(mp3_file).export(wav_file, format="wav")
     # graph_spectrogram(wav_file)
-    secondFunction()
+    secondFunction(wav_file)
 
 
 
